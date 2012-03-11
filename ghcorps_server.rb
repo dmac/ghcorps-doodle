@@ -12,6 +12,14 @@ class GHCorps < Sinatra::Base
     set :tokens, Hash.new { |hash, key| hash[key] = {} }
   end
 
+  configure :development do
+    GHCORPS_HOST = "http://127.0.0.1:8000"
+  end
+
+  configure :prod do
+    GHCORPS_HOST = "http://young-dawn-3751.herokuapp.com"
+  end
+
   COUNTRIES = {
     "B" => { :code => "B", :name => "Burundi" },
     "M" => { :code => "M", :name => "Malawi" },
@@ -73,7 +81,7 @@ class GHCorps < Sinatra::Base
 
   def request_token
     settings.tokens[session_id][:request_token] ||= consumer.get_request_token(
-        { :oauth_callback => "http://127.0.0.1:8000/oauth/callback" },
+        { :oauth_callback => "#{GHCORPS_HOST}/oauth/callback" },
         { "doodle_get" => "name|initiatedPolls"} )
   end
 
