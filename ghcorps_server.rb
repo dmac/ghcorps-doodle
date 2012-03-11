@@ -16,7 +16,7 @@ class GHCorps < Sinatra::Base
     GHCORPS_HOST = "http://127.0.0.1:8000"
   end
 
-  configure :prod do
+  configure :production do
     GHCORPS_HOST = "http://young-dawn-3751.herokuapp.com"
   end
 
