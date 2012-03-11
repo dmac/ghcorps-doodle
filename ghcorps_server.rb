@@ -55,7 +55,7 @@ class GHCorps < Sinatra::Base
 
     content_type "text/csv"
     headers "Content-Disposition" => "attachment;filename=#{COUNTRIES[params[:country_code]][:name]}.csv"
-    erb :country_data, :locals => { :participants => participants }
+    erb :country_data, :locals => { :participants => participants }, :layout => false
   end
 
   get "/oauth/callback" do
