@@ -1,9 +1,16 @@
 require "oauth"
 require "nokogiri"
+require "digest/sha1"
 require "./models/user"
 require "./models/poll"
 
 class GHCorps < Sinatra::Base
+  enable :sessions
+
+  configure do
+    set :tokens, Hash.new { |hash, key| hash[key] = {} }
+  end
+
   COUNTRIES = {
     "B" => { :code => "B", :name => "Burundi" },
     "M" => { :code => "M", :name => "Malawi" },
@@ -16,8 +23,7 @@ class GHCorps < Sinatra::Base
   }
 
   before do
-    next if request.path.include? "oauth"
-    redirect request_token.authorize_url unless access_token
+    authorize! unless access_token || request.path.include?("oauth")
   end
 
   get "/" do
@@ -28,7 +34,6 @@ class GHCorps < Sinatra::Base
   get "/test" do
     poll = Poll.get_poll(access_token, "gkdqf6bfpha2znnf")
     puts poll.xml
-    ""
   end
 
   get "/country_data/:country_code" do
@@ -50,25 +55,33 @@ class GHCorps < Sinatra::Base
   end
 
   get "/oauth/callback" do
-    make_access_token(params[:oauth_verifier])
+    make_access_token!(params[:oauth_verifier])
     redirect "/"
   end
 
+  def authorize!
+    #puts "\n\n\nauthorize: #{session_id.inspect}\n\n\n"
+    redirect request_token.authorize_url unless access_token
+  end
+
   def consumer
-    @@consumer ||= OAuth::Consumer.new("nur1oamwpszmvkaal7fmrh2vnlqkj8pw", "24nfmsyeh8shl7mo1z5iku7vj5uzqn2b",
+    settings.tokens[session_id][:consumer] ||= OAuth::Consumer.new("nur1oamwpszmvkaal7fmrh2vnlqkj8pw", "24nfmsyeh8shl7mo1z5iku7vj5uzqn2b",
       { :site => "http://doodle.com", :request_token_path => "/api1/oauth/requesttoken",
         :access_token_path => "/api1/oauth/accesstoken", :authorize_path => "/api1/oauth/authorizeConsumer" })
   end
 
-  def request_token()
-    @@request_token ||= consumer.get_request_token(
+  def request_token
+    settings.tokens[session_id][:request_token] ||= consumer.get_request_token(
         { :oauth_callback => "http://127.0.0.1:8000/oauth/callback" },
         { "doodle_get" => "name|initiatedPolls"} )
   end
 
-  def make_access_token(oauth_verifier)
-    @@access_token ||= request_token.get_access_token(:oauth_verifier => oauth_verifier)
+  def make_access_token!(oauth_verifier)
+    settings.tokens[session_id][:access_token] ||= request_token.get_access_token(:oauth_verifier => oauth_verifier)
   end
 
-  def access_token() @@access_token ||= nil end
+  def access_token() settings.tokens[session_id][:access_token] end
+
+  def session_id() session[:id] ||= unique_id! end
+  def unique_id!() Digest::SHA1.hexdigest(Time.now.to_s) end
 end
