@@ -1,5 +1,6 @@
 require "oauth"
 require "nokogiri"
+require "thin"
 require "digest/sha1"
 require "./models/user"
 require "./models/poll"
