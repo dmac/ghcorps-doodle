@@ -1,0 +1,18 @@
+## Questions
+
+* As a judge: who am I interviewing? When am I interviewing?
+
+## Strategy
+
+* List all countries
+* When country clicked, get all poll ids
+* Filter poll ids for titles matching country
+* Pull data on all matching polls
+* Find unique list of participants
+* Map list of participants to relevant fields and export as csv
+
+Question: How to differentiate between applicant applying to two positions in same country?
+
+
+
+

@@ -1,0 +1,5 @@
+<ul>
+  <% polls.sort_by! { |p| p[:title] }.each do |poll| %>
+    <li><a href="http://doodle.com/<%= poll[:id] %>"><%= poll[:title] %></a></li>
+  <% end %>
+</ul>
