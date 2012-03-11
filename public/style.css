@@ -1,0 +1,23 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  font-size: 12pt;
+  background: url(/images/background.jpg) 300px -100px no-repeat;
+}
+
+div {
+  margin: 30px;
+}
+
+h2 {
+  font-size: 1.3em;
+  padding-bottom: 5px;
+}
+
+li {
+  list-style: none;
+  padding: 1px;
+}

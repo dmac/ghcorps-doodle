@@ -1,5 +1,5 @@
 <div id="countryData">
-  <p>Download interview data for:</p>
+  <h2>Download Interview Data</h2>
   <ul>
     <% countries.each do |country| %>
       <li><a href="/country_data/<%= country[:code] %>"><%= country[:name] %></li></a>
@@ -8,7 +8,7 @@
 </div>
 
 <div id="pollList">
-  <p>View Doodle Poll</p>
+  <h2>View Doodle Poll</h2>
   <ul>
     <% polls.sort_by! { |p| p[:title] }.each do |poll| %>
       <li><a href="http://doodle.com/<%= poll[:id] %>"><%= poll[:title] %></a></li>
