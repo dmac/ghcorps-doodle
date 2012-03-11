@@ -40,11 +40,6 @@ class GHCorps < Sinatra::Base
     erb :index, :locals => { :polls => user.polls, :countries => COUNTRIES.values }
   end
 
-  get "/test" do
-    poll = Poll.get_poll(access_token, "gkdqf6bfpha2znnf")
-    puts poll.xml
-  end
-
   get "/country_data/:country_code" do
     user = User.get_user(access_token)
     poll_info = user.polls.select do |poll|
