@@ -17,7 +17,7 @@ class GHCorps < Sinatra::Base
   end
 
   configure :production do
-    GHCORPS_HOST = "http://young-dawn-3751.herokuapp.com"
+    GHCORPS_HOST = "http://ghcorps.herokuapp.com"
   end
 
   COUNTRIES = {
