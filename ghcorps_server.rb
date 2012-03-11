@@ -4,10 +4,49 @@ require "./models/user"
 require "./models/poll"
 
 class GHCorps < Sinatra::Base
-  get "/" do
+  COUNTRIES = {
+    "B" => { :code => "B", :name => "Burundi" },
+    "M" => { :code => "M", :name => "Malawi" },
+    "R" => { :code => "R", :name => "Rwanda" },
+    "UG" => { :code => "UG", :name => "Uganda" },
+    "Z" => { :code => "Z", :name => "Zambia" },
+    "US-A" => { :code => "US-A", :name => "USA-American" },
+    "US-I" => { :code => "US-I", :name => "USA-International" },
+    "T" => { :code => "T", :name => "Test" }
+  }
+
+  before do
+    next if request.path.include? "oauth"
     redirect request_token.authorize_url unless access_token
+  end
+
+  get "/" do
     user = User.get_user(access_token)
-    erb :index, :locals => { :polls => user.polls }
+    erb :index, :locals => { :polls => user.polls, :countries => COUNTRIES.values }
+  end
+
+  get "/test" do
+    poll = Poll.get_poll(access_token, "gkdqf6bfpha2znnf")
+    puts poll.xml
+    ""
+  end
+
+  get "/country_data/:country_code" do
+    user = User.get_user(access_token)
+    poll_info = user.polls.select do |poll|
+      poll[:title].start_with?("#{params[:country_code][0..1].upcase}-") &&
+          (poll[:title].include?("American") || poll[:title].include?("International"))
+    end
+
+    polls = poll_info.map { |poll| poll[:id] }.map do |poll_id|
+      Poll.get_poll(access_token, poll_id)
+    end
+
+    participants = polls.map(&:participants).inject(&:concat)
+
+    content_type "text/csv"
+    headers "Content-Disposition" => "attachment;filename=#{COUNTRIES[params[:country_code]][:name]}.csv"
+    erb :country_data, :locals => { :participants => participants }
   end
 
   get "/oauth/callback" do
