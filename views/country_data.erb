@@ -1,5 +1,7 @@
 <% # position_code, judge1, judge2, name, interview_date, interview_time, phone, email, skype, other, notes %>
 <% participants.each do |participant| %>
-<%= [participant[:poll_code], nil, nil, participant[:name], participant[:time].strftime("%Y-%m-%d"),
-     participant[:time].strftime("%H:%M"), participant[:phone], participant[:email], nil, nil, nil].join(",") %>
+<%= [participant[:poll_code], nil, nil, participant[:name],
+       (participant[:time].nil? ? nil : participant[:time].strftime("%Y-%m-%d")),
+       (participant[:time].nil? ? nil : participant[:time].strftime("%H:%M")),
+       participant[:phone], participant[:email], nil, nil, nil].join(",") %>
 <% end %>

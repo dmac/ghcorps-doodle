@@ -10,13 +10,14 @@ class Poll
   end
 
   def participants
+    puts "\n\n\n#{@title}\n\n\n"
     @participants ||= @xml.css("participant").map do |participant|
       { :id => participant.css("userId").text,
         :name => participant.css("name").text,
         :email => participant.css("participantEmailAddress").text,
         :phone => participant.css("participantPhoneNumber").text,
         :poll_code => @title.split(":")[0],
-        :time => Time.parse(datetimes[participant.css("preferences option").map(&:text).index("1")])
+        :time => (Time.parse(datetimes[participant.css("preferences option").map(&:text).index("1")]) rescue nil)
       }
     end
   end
