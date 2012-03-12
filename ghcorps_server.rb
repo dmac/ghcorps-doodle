@@ -51,7 +51,11 @@ class GHCorps < Sinatra::Base
       Poll.get_poll(access_token, poll_id)
     end
 
-    participants = polls.map(&:participants).inject(&:concat)
+    participants = polls.map(&:participants).inject(&:concat).sort do |a, b|
+      first = a[:poll_code] <=> b[:poll_code]
+      return first unless first.zero?
+      a[:name] <=> b[:name]
+    end
 
     content_type "text/csv"
     headers "Content-Disposition" => "attachment;filename=#{COUNTRIES[params[:country_code]][:name]}.csv"
