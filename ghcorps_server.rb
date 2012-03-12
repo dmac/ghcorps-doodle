@@ -53,8 +53,7 @@ class GHCorps < Sinatra::Base
 
     participants = polls.map(&:participants).inject(&:concat).sort do |a, b|
       first = a[:poll_code] <=> b[:poll_code]
-      return first unless first.zero?
-      a[:name] <=> b[:name]
+      first.zero? ? a[:name] <=> b[:name] : first
     end
 
     content_type "text/csv"
