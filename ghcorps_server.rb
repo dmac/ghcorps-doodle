@@ -74,7 +74,6 @@ class GHCorps < Sinatra::Base
   end
 
   def authorize!
-    #puts "\n\n\nauthorize: #{session_id.inspect}\n\n\n"
     redirect request_token.authorize_url unless access_token
   end
 
