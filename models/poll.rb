@@ -16,7 +16,7 @@ class Poll
         :name => participant.css("name").text,
         :email => participant.css("participantEmailAddress").text,
         :phone => participant.css("participantPhoneNumber").text,
-        :poll_code => @title.split(":")[0],
+        :poll_code => @title.split(/[:\s]/)[0],
         :time => (Time.parse(datetimes[participant.css("preferences option").map(&:text).index("1")]) rescue nil)
       }
     end
