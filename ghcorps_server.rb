@@ -47,6 +47,13 @@ class GHCorps < Sinatra::Base
           (poll[:title].include?("American") || poll[:title].include?("International"))
     end
 
+    # Filter US American or US International
+    if params[:country_code].start_with?("US")
+      poll_info = params[:country_code].end_with?("A") ?
+          poll_info.select { |info| info[:title].include?("American") } :
+          poll_info.select { |info| info[:title].include?("International") }
+    end
+
     polls = poll_info.map { |poll| poll[:id] }.map do |poll_id|
       Poll.get_poll(access_token, poll_id)
     end
